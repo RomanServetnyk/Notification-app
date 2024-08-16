@@ -76,7 +76,6 @@ This project is a Laravel-based notification system that supports real-time noti
 
   ```json
   {
-    "user_id": 1,
     "type": 1,
     "message": "This is a test notification"
   }
