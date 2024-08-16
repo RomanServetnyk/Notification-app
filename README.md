@@ -63,20 +63,6 @@ This project is a Laravel-based notification system that supports real-time noti
     ```
 5. **Test by Postman:**
 
-    localhost:8000/api/register
-    {
-        name:"username",
-        email:"email"
-    }
-    localhost:8000/api/notification-type
-    {
-        "notification_type": "update"
-    }
-    localhost:8000/api/subscribe-notifications
-    {
-    "user_id": "1",
-    "types": [1,3]
-    }
 ## Usage
 - **Register:**
   
