@@ -7,6 +7,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN docker-php-ext-install pdo mbstring
 COPY . /app
 WORKDIR /app
-RUN composer install
+RUN composer require
 CMD php artisan migrate & php artisan serve --host=0.0.0.0 
 EXPOSE 8000
