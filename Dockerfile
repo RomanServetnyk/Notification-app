@@ -1,46 +1,50 @@
-# Use the official PHP 8.2 with Apache base image
-FROM php:8.2-apache
+FROM ubuntu:20.04
 
-# Set the working directory within the container to /var/www/html
-WORKDIR /var/www/html
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Copy the composer.json and composer.lock files from the host to the container
-COPY composer.json composer.lock /var/www/html/
-
-# Update package lists and install necessary packages
-RUN apt-get update && \
-    apt-get install -y \
-    zip \
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    apt-utils \
+    software-properties-common \
+    nano \
+    curl \
+    gnupg2 \
+    lsb-release \
     unzip \
-    git \
-    libpq-dev \
-    && docker-php-ext-install \
-    pdo_mysql \
-    && docker-php-ext-enable \
-    pdo_mysql
+    git
 
-# Copy Composer binary from another image layer to this image
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+# Install PHP and extensions
+RUN add-apt-repository ppa:ondrej/php -y && \
+    apt-get update && apt-get install -y \
+    php8.1 \
+    php8.1-cli \
+    php8.1-mysql \
+    php8.1-pgsql \
+    php8.1-sqlite3 \
+    php8.1-redis \
+    php8.1-curl \
+    php8.1-json \
+    php8.1-zip \
+    php8.1-bcmath \
+    php8.1-mbstring \
+    php8.1-xml \
+    php8.1-tokenizer \
+    php8.1-gd \
+    libpng-dev
 
-# Copy all files from the host's current directory to the container's /var/www/html directory
-COPY . /var/www/html
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Set an environment variable to allow Composer to run as superuser
-ENV COMPOSER_ALLOW_SUPERUSER=1
+# Set working directory
+WORKDIR /var/www
 
-# Run Composer to install project dependencies, ignoring platform requirements
-RUN composer install --ignore-platform-reqs
+# Copy existing application directory contents to the working directory
+COPY . /var/www
 
-# Change ownership of certain directories to the www-data user (Apache)
-RUN chown -R www-data:www-data /var/www/html/storage \
-&& chown -R www-data:www-data /var/www/html/bootstrap/cache
+# Install application dependencies
+RUN composer install --no-interaction
 
-# Enable the Apache rewrite module and update Apache's default site configuration
-RUN a2enmod rewrite && \
-    sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
-
-# Expose port 80 for incoming HTTP traffic
-EXPOSE 80
-
-# Start the Apache web server in the foreground
-CMD ["apache2-foreground"]
+# Expose port 8000 and start PHP built-in server
+EXPOSE 8000
+CMD php artisan serve --host=0.0.0.0 --port=8000
