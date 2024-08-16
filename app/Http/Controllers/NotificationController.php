@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Notification;
 use App\Models\User;
 use App\Jobs\SendNotificationJob;
+use App\Jobs\RealTimeNotificationJob;
 use Illuminate\Http\Request;
 use App\Models\NotificationType;
 use Illuminate\Support\Facades\Log;
@@ -25,25 +26,25 @@ class NotificationController extends Controller
         //     'type' => 'required|int|exists:notification_types,type',
         //     'message' => 'required|string',
         // ]);
-
-        $user = User::findOrFail($request->input('user_id'));
+        $users = User::all();
         $notificationType = $request->input('type');
         $message = $request->input('message');
         Log::debug("creating notification");
-        if ($user->notificationTypes()->where('id', $notificationType)->exists()) {
-            $notification = Notification::create([
-                'user_id' => $user->id,
-                'type' => $notificationType,
-                'message' => $message,
-                'status' => 'pending',
-            ]);
-
-            SendNotificationJob::dispatch($user, $notification);
-
-            return response()->json(['status' => 'Notification queued successfully!']);
+        foreach($users as $user) {
+            if ($user->notificationTypes()->where('id', $notificationType)->exists()) {
+                $notification = Notification::create([
+                    'user_id' => $user->id,
+                    'type' => $notificationType,
+                    'message' => $message,
+                    'status' => 'pending',
+                ]);
+    
+                SendNotificationJob::dispatch($user, $notification);
+    
+            }    
         }
-
-        return response()->json(['error' => 'User is not subscribed to this notification type'], 400);
+        RealTimeNotificationJob::dispatch($notification);
+        return response()->json(['status' => 'Notification queued successfully!']);
     }
 
     public function createNotificationType(Request $request){

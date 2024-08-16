@@ -1,7 +1,5 @@
 <?php
 
-// app/Jobs/SendNotificationJob.php
-
 namespace App\Jobs;
 
 use App\Models\Notification;
@@ -14,29 +12,26 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
-
 use App\Events\NotificationSentEvent;
 
-class SendNotificationJob implements ShouldQueue
+class RealTimeNotificationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    protected $user;
     protected $notification;
-
-    public function __construct(User $user, Notification $notification)
+    /**
+     * Create a new job instance.
+     */
+    public function __construct(Notification $notification)
     {
-        $this->user = $user;
         $this->notification = $notification;
     }
 
-    public function handle()
+    /**
+     * Execute the job.
+     */
+    public function handle(): void
     {
-        // Sending email notification
-        Mail::to($this->user->email)->send(new UserNotificationMail($this->notification));
-
-        // Update notification status
-        $this->notification->update(['status' => 'sent']);
+        // Dispatch the notification event
+        event(new NotificationSentEvent($this->notification));
     }
 }
-
