@@ -102,3 +102,7 @@ This project is a Laravel-based notification system that supports real-time noti
     "type": 1,
     "message": "This is a test notification"
   }
+    ```
+
+Then all users will receive notifications via email and show real-time notifications on `https:\\localhost:8000`
+
