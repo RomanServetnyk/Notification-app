@@ -58,7 +58,7 @@ This project is a Laravel-based notification system that supports real-time noti
 
 6. **Set up Pusher:**
 
-    Edit `.env` file to include your Pusher credentials.
+    Edit `.env` file to include your Pusher and Mail credentials.
 
     ```dotenv
     BROADCAST_DRIVER=pusher
@@ -66,6 +66,15 @@ This project is a Laravel-based notification system that supports real-time noti
     PUSHER_APP_KEY=your-pusher-app-key
     PUSHER_APP_SECRET=your-pusher-app-secret
     PUSHER_APP_CLUSTER=mt1
+    ```
+
+    ```dotenv
+    MAIL_MAILER=smtp
+    MAIL_HOST=smtp.gmail.com
+    MAIL_PORT=465
+    MAIL_USERNAME=your-mail-address
+    MAIL_PASSWORD=your-mail-password
+    MAIL_ENCRYPTION=ssl
     ```
 
 ## Usage
