@@ -40,23 +40,8 @@ This project is a Laravel-based notification system that supports real-time noti
     docker-compose up -d --build
     ```
 
-4. **Install dependencies:**
 
-    Access the `app` container and run composer install.
-
-    ```bash
-    docker exec -it laravel-app bash
-    composer install
-    ```
-
-5. **Run migrations:**
-
-    ```bash
-    docker exec -it laravel-app bash
-    php artisan migrate
-    ```
-
-6. **Set up Pusher:**
+4. **Set up Pusher and Mail:**
 
     Edit `.env` file to include your Pusher and Mail credentials.
 
@@ -76,12 +61,55 @@ This project is a Laravel-based notification system that supports real-time noti
     MAIL_PASSWORD=your-mail-password
     MAIL_ENCRYPTION=ssl
     ```
+5. **Test by Postman:**
 
+    localhost:8000/api/register
+    {
+        name:"username",
+        email:"email"
+    }
+    localhost:8000/api/notification-type
+    {
+        "notification_type": "update"
+    }
+    localhost:8000/api/subscribe-notifications
+    {
+    "user_id": "1",
+    "types": [1,3]
+    }
 ## Usage
+- **Register:**
+  
+  You can register with name and email by making a POST request to `/api/resiter`.
 
+  ```json
+  {
+    "name": "username",
+    "email": "example@gmail.com"
+  }
+
+- **Setting Notification Type:**
+  
+  You can set type of notification by making a POST request to `/api/notification-type`.
+
+  ```json
+  {
+    "notification_type": "update" 
+  }
+    alert, new, update ...
+
+- **Subscribe Notifications:**
+  
+  You can subscribe notification by making a POST request to `/api/subscribe-notifications`.
+
+  ```json
+  {
+    "user_id": "1",
+    "types": [1,3]
+  }
 - **Trigger Notifications:**
   
-  You can trigger notifications by making a POST request to `/trigger-notification`.
+  You can trigger notifications by making a POST request to `/api/trigger-notification`.
 
   ```json
   {
