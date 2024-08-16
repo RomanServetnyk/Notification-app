@@ -1,33 +1,12 @@
 # Dockerfile
 
-FROM php:8.0-fpm
-
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    libjpeg-dev \
-    libmcrypt-dev \
-    libpng-dev \
-    libzip-dev \
-    zip \
-    unzip \
-    git \
-    curl
-
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-WORKDIR /var/www
-
-COPY . .
-
+FROM php:8.0
+RUN apt-get update -y && apt-get install -y openssl zip unzip git
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN docker-php-ext-install pdo mbstring
+WORKDIR /app
+COPY . /app
 RUN composer install
 
-RUN chown -R www-data:www-data /var/www
-
-EXPOSE 9000
-
-CMD ["php-fpm"]
+CMD php artisan serve --host=0.0.0.0 --port=8181
+EXPOSE 8181
