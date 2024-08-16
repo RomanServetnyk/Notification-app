@@ -2,7 +2,7 @@
 
 FROM php:8.1-fpm
 RUN apt-get update -y && \
-    apt-get install -y mysql-server openssl zip unzip git libpq-dev libzip-dev libonig-dev
+    apt-get install -y openssl zip unzip git libpq-dev libzip-dev libonig-dev
 # RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
 RUN docker-php-ext-install pdo_mysql zip exif pcntl
 # RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/
