@@ -7,6 +7,6 @@ RUN docker-php-ext-install pdo mbstring
 WORKDIR /app
 COPY . /app
 RUN composer install
-
+RUN php artisan migrate
 CMD php artisan serve --host=0.0.0.0 
 EXPOSE 8000
