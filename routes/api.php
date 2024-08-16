@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
-
+use App\Http\Controllers\RegistrationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,6 +19,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Route to register
+Route::post('/register', [RegistrationController::class, 'register']);
 // Route to trigger notification
 Route::post('/trigger-notification', [NotificationController::class, 'triggerNotification']);
 
@@ -27,7 +29,7 @@ Route::post('/notification-type', [NotificationController::class, 'createNotific
 
 // Route to update an existing notification type
 Route::put('/notification-type', [NotificationController::class, 'updateNotificationType']);
-
+ 
 // Route to get all notification types
 Route::get('/notification-types', [NotificationController::class, 'getAllNotificationType']);
 
